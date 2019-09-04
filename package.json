@@ -1,0 +1,28 @@
+{
+  "name": "webauth-i-challenge",
+  "version": "1.0.0",
+  "description": "Authentication challenge one",
+  "main": "index.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "knex": "^0.19.3",
+    "nodemon": "^1.19.2",
+    "sqlite3": "^4.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test",
+    "server": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TJ-Feledy/webauth-i-challenge.git"
+  },
+  "author": "TJ",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TJ-Feledy/webauth-i-challenge/issues"
+  },
+  "homepage": "https://github.com/TJ-Feledy/webauth-i-challenge#readme"
+}
