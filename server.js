@@ -16,7 +16,13 @@ server.post('/api/register', (req, res) => {
 
   user.password = bcryptjs.hashSync(user.password, 10)
 
-
+  db('users').insert(user)
+    .then(newUser => {
+      res.status(201).json(newUser)
+    })
+    .catch(err => {
+      res.status(500).json({ errorMessage: `${err}` })
+    })
 })
 
 module.exports = server
