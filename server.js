@@ -28,7 +28,7 @@ server.post('/api/register', (req, res) => {
 server.post('/api/login', (req, res) => {
   const { username, password } = req.body
 
-  db(users).where({ username })
+  db('users').where({ username })
     .first()
     .then(user => {
       if (user && bcryptjs.compareSync(password, user.password)) {
@@ -42,6 +42,37 @@ server.post('/api/login', (req, res) => {
     })
 })
 
+server.get('/api/users', restricted, (req, res) => {
+  db('users')
+    .then(users => {
+      res.json(users)
+    })
+    .catch(err => {
+      res.status(500).json({ errorMessage: `${err}` })
+    })
+})
 
+// **********Custom middleware*************
+
+function restricted(req, res, next) {
+  const { username, password } = req.headers
+
+  if (username && password) {
+    db('users').where({username})
+      .first()
+      .then(user => {
+        if (user && bcryptjs.compareSync(password, user.password)) {
+          next()
+        }else {
+          res.status(401).json({ message: 'You shall not pass!' })
+        }
+      })
+      .catch(err => {
+        res.status(500).json({ errorMessage: `${err}` })
+      })
+  }else {
+    res.status(400).json({ message: 'Provide a username and password.' })
+  }
+}
 
 module.exports = server
