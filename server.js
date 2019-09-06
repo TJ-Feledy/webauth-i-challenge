@@ -81,23 +81,12 @@ server.get('/api/users', restricted, (req, res) => {
 // **********Custom middleware*************
 
 function restricted(req, res, next) {
-  const { username, password } = req.headers
+  const { user } = req.session
 
-  if (username && password) {
-    db('users').where({username})
-      .first()
-      .then(user => {
-        if (user && bcryptjs.compareSync(password, user.password)) {
-          next()
-        }else {
-          res.status(401).json({ message: 'You shall not pass!' })
-        }
-      })
-      .catch(err => {
-        res.status(500).json({ errorMessage: `${err}` })
-      })
+  if (req.session && user) {
+    next()
   }else {
-    res.status(400).json({ message: 'Provide a username and password.' })
+    res.status(401).json({ message: 'You shall not pass!' })
   }
 }
 
