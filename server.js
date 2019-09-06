@@ -1,11 +1,35 @@
 const express = require('express')
 const bcryptjs = require('bcryptjs')
+const session = require('express-session')
+const connectSessionKnex = require('connect-session-knex')
 
 const db = require('./data/dbConfig.js')
 
 const server = express()
 
+const knexSessionStore = connectSessionKnex(session)
+
+const sessionConfig = {
+  name: 'cool stuff',
+  secret: 'i am tired',
+  cookie: {
+    maxAge: 1000 * 60 * 60,
+    secure: false,
+    httpOnly: true
+  },
+  resave: false,
+  saveUninitialized: false,
+  store: new knexSessionStore({
+    knex: db,
+    tablename: 'sessions',
+    sidfieldname: 'sid',
+    createtable: true,
+    clearInterval: 1000 * 60 * 60
+  })
+}
+
 server.use(express.json())
+server.use(session(sessionConfig))
 
 server.get('/', (req, res) => {
   res.send('Server is up and running!')
