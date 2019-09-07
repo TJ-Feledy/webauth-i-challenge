@@ -41,9 +41,15 @@ server.post('/api/register', (req, res) => {
   user.password = bcryptjs.hashSync(user.password, 10)
 
   db('users').insert(user)
-    .then(newUser => {
+    .then(ids => {
       req.session.user = user
-      res.status(201).json(newUser)
+      db('users').where({id: ids[0]})
+      .then(newUser => {
+        res.status(201).json(newUser)
+      })
+      .catch(err => {
+        res.status(500).json({ errorMessage: `${err}` })
+      })
     })
     .catch(err => {
       res.status(500).json({ errorMessage: `${err}` })
@@ -69,7 +75,7 @@ server.post('/api/login', (req, res) => {
 })
 
 server.get('/api/users', restricted, (req, res) => {
-  db('users')
+  db('users').select('username')
     .then(users => {
       res.json(users)
     })
